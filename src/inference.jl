@@ -78,28 +78,5 @@ function infer!(o::MLE2, m::FITCModel)
 			best = candidate
 		end
 	end
-	# println("$(best)")
-	init = [flatten_hyp(m), m.u[:]]
-	init_best = (nll(m), init)
-	best = (nll(m), init, :ORIGINAL)
-	opt = NLopt.Opt(o.method, length(init))
-	NLopt.lower_bounds!(opt, o.lb)
-	NLopt.upper_bounds!(opt, o.ub)
-	NLopt.xtol_rel!(opt,1e-4)
-	NLopt.ftol_rel!(opt, 1e-12)
-	NLopt.maxtime!(opt, o.maxtime)
-	NLopt.maxeval!(opt, o.maxeval)
-	NLopt.min_objective!(opt, wrap_model(m))
-	for r = 1:o.reps
-		this_init = init + randn(size(init)) * o.jitter
-		this_init = min(init, o.ub)
-		this_init = max(init, o.lb)
-		candidate = NLopt.optimize(opt, this_init)
-		if candidate[1] < best[1]
-			best = candidate
-		end
-	end
-	# println("$(best)")
-	m.u = best[2][length(flatten_hyp(m)) + 1:end]''
 	m.k, m.lik = inflate_hyp(m, best[2][1:length(flatten_hyp(m))])
 end

@@ -1,5 +1,5 @@
 abstract Covariance
-import Distance
+import Distances
 
 abstract Kernel
 
@@ -32,7 +32,7 @@ function kernel{T <: FloatingPoint}(h::SqExpIso, X1::Array{T, 2},
 						X2::Array{T, 2}) 
 	l2 = exp(2h.log_l)
 	s2 = exp(2h.log_s)
-	s2 * exp(-Distance.pairwise(Distance.SqEuclidean(), X1', X2') / (2l2))
+	s2 * exp(-Distances.pairwise(Distances.SqEuclidean(), X1', X2') / (2l2))
 end
 kernel{T <: FloatingPoint}(h::SqExpIso, X::Array{T, 2}) = kernel(h, X, X)
 
@@ -49,7 +49,7 @@ function kernel{T <: FloatingPoint}(h::SqExpIsoPeriodic, X1::Array{T, 2},
 	s2 = exp(2h.log_s)
 	period1 = exp(h.log_period)
 	s2 * 
-	exp(-Distance.pairwise(Distance.SqEuclidean(), 
+	exp(-Distances.pairwise(Distances.SqEuclidean(), 
 		cos(2pi * X1 / period1)', cos(2pi * X2 / period1)') / (2l2))
 end
 kernel{T <: FloatingPoint}(h::SqExpIsoPeriodic, X::Array{T, 2}) = kernel(h, X, X)
@@ -69,9 +69,9 @@ function kernel{T <: FloatingPoint}(h::SqExpIso2Periodic, X1::Array{T, 2},
 	period1 = exp(h.log_period1)
 	period2 = exp(h.log_period2)
 	s2 * 
-	(exp(-Distance.pairwise(Distance.SqEuclidean(), 
+	(exp(-Distances.pairwise(Distances.SqEuclidean(), 
 		cos(2pi * X1 / period1)', cos(2pi * X2 / period1)') / (2l2)) .+
-	exp(-Distance.pairwise(Distance.SqEuclidean(), 
+	exp(-Distances.pairwise(Distances.SqEuclidean(), 
 		cos(2pi * X1 / period2)', cos(2pi * X2 / period2)') / (2l2)))
 end
 kernel{T <: FloatingPoint}(h::SqExpIso2Periodic, X::Array{T, 2}) = kernel(h, X, X)
@@ -94,11 +94,11 @@ function kernel{T <: FloatingPoint}(h::SqExpIso3Periodic, X1::Array{T, 2},
 	period2 = exp(h.log_period2)
 	period3 = exp(h.log_period3)
 	s2 * 
-	(exp(-Distance.pairwise(Distance.SqEuclidean(), 
+	(exp(-Distances.pairwise(Distances.SqEuclidean(), 
 		cos(2pi * X1 / period1)', cos(2pi * X2 / period1)') / (2l2)) .+
-	exp(-Distance.pairwise(Distance.SqEuclidean(), 
+	exp(-Distances.pairwise(Distances.SqEuclidean(), 
 		cos(2pi * X1 / period2)', cos(2pi * X2 / period2)') / (2l2)) .+ 
-	exp(-Distance.pairwise(Distance.SqEuclidean(), 
+	exp(-Distances.pairwise(Distances.SqEuclidean(), 
 		cos(2pi * X1 / period3)', cos(2pi * X2 / period3)') / (2l2)))
 end
 kernel{T <: FloatingPoint}(h::SqExpIso3Periodic, X::Array{T, 2}) = kernel(h, X, X)
@@ -123,13 +123,13 @@ function kernel{T <: FloatingPoint}(h::SqExpIso4Periodic, X1::Array{T, 2},
 	period3 = exp(h.log_period3)
 	period4 = exp(h.log_period4)
 	s2 * 
-	(exp(-Distance.pairwise(Distance.SqEuclidean(), 
+	(exp(-Distances.pairwise(Distances.SqEuclidean(), 
 		cos(2pi * X1 / period1)', cos(2pi * X2 / period1)') / (2l2)) .+
-	exp(-Distance.pairwise(Distance.SqEuclidean(), 
+	exp(-Distances.pairwise(Distances.SqEuclidean(), 
 		cos(2pi * X1 / period2)', cos(2pi * X2 / period2)') / (2l2)) .+ 
-	exp(-Distance.pairwise(Distance.SqEuclidean(), 
+	exp(-Distances.pairwise(Distances.SqEuclidean(), 
 		cos(2pi * X1 / period3)', cos(2pi * X2 / period3)') / (2l2)) .+ 
-	exp(-Distance.pairwise(Distance.SqEuclidean(), 
+	exp(-Distances.pairwise(Distances.SqEuclidean(), 
 		cos(2pi * X1 / period4)', cos(2pi * X2 / period4)') / (2l2)))
 end
 kernel{T <: FloatingPoint}(h::SqExpIso4Periodic, X::Array{T, 2}) = kernel(h, X, X)
@@ -144,7 +144,7 @@ function kernel{T <: FloatingPoint}(h::MaternIso32, X1::Array{T, 2},
 						X2::Array{T, 2})
 	l = exp(h.log_l)
 	s = exp(h.log_s)
-	s3dol = sqrt(3) * Distance.pairwise(Distance.Euclidean(), X1', X2') / l
+	s3dol = sqrt(3) * Distances.pairwise(Distances.Euclidean(), X1', X2') / l
 	s * (1 .+ s3dol) .* exp(-s3dol)
 end
 kernel{T <: FloatingPoint}(h::MaternIso32, X::Array{T, 2}) = kernel(h, X, X)
@@ -158,7 +158,7 @@ function kernel{T <: FloatingPoint}(h::MaternARD32, X1::Array{T, 2},
 						X2::Array{T, 2})
 	ls2 = 2exp(2h.log_ls[:])
 	s = exp(h.log_s)
-	s3dol = sqrt(3) * Distance.pairwise(Distance.WeightedEuclidean(1./ls2), X1', X2')
+	s3dol = sqrt(3) * Distances.pairwise(Distances.WeightedEuclidean(1./ls2), X1', X2')
 	s * (1 .+ s3dol) .* exp(-s3dol)
 end
 kernel{T <: FloatingPoint}(h::MaternARD32, X::Array{T, 2}) = kernel(h, X, X)
